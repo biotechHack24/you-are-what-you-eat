@@ -1,3 +1,50 @@
-p.something {
-    font-size: 50%;
+.main {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.data {
+    display: flex;
+    flex-direction: column;
+    gap: 5svh;
+    align-items: baseline;
+}
+
+.section_heading {
+    margin-top: 5svh;
+    margin-bottom: 2svh;
+}
+
+.chart {
+    width: 50svw;
+    max-width: 800px;
+    min-width: 300px;
+    max-height: 500px;
+}
+
+.data_subsection {
+    width: 100%;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    gap: 5svh;
+}
+
+.progress {
+    width: 100%;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.score {
+    font-size: 120%;
+    text-decoration: underline;
 }
