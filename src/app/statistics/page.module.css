@@ -6,31 +6,43 @@
 }
 
 .data {
+    width: 100%;
+    height: 100%;
+    margin-top: 5svh;
+
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     gap: 5svh;
     align-items: baseline;
+}
+
+.data_section {
+    display: flex;
+    flex-direction: column;
+    width: 50%;
+    height: 100%;
 }
 
 .section_heading {
     margin-top: 5svh;
     margin-bottom: 2svh;
+    margin-bottom: 3svh;
+    text-align: center;
 }
 
-.chart {
-    width: 50svw;
+.graphic {
+    height: 500rem;
     max-width: 800px;
     min-width: 300px;
     max-height: 500px;
-}
-
-.data_subsection {
-    width: 100%;
+    min-height: 200px;
 
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+
+    font-size: 150%;
 
     gap: 5svh;
 }
@@ -41,10 +53,17 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
-    align-items: center;
+    align-items: flex-start;
+}
+
+.progress_bar {
+    height: 50%;
+    width: 90%;
 }
 
 .score {
+    margin-top: 5svh;
     font-size: 120%;
+    text-align: center;
     text-decoration: underline;
 }
