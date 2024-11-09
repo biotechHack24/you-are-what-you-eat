@@ -34,7 +34,23 @@ export default function Analysis() {
                 });
 
                 const data: AIResponseData = await response.json();
-                setAnalysisResult(data);
+
+                const relevantData = {
+                    nutrients: {
+                        carbohydrates: data.nutrients.carbohydrates,
+                        protein: data.nutrients.protein,
+                        minerals: data.nutrients.minerals,
+                        dairy: data.nutrients.dairy
+                    },
+                    environment: {
+                        co2_score: data.environment.co2_score,
+                        water_score: data.environment.water_score,
+                        land_score: data.environment.land_score
+                    },
+                    nutrient_score: data.nutrient_score,
+                    environment_score: data.environment_score
+                };
+                setAnalysisResult(relevantData);
                 setLoading(false);
             } catch (error) {
                 console.error("Error analyzing image:", error);
@@ -53,15 +69,33 @@ export default function Analysis() {
                     'Authorization': `Bearer ${HUGGING_FACE_API_KEY}`,
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ inputs: foodInput }),
+                body: JSON.stringify({
+                    inputs: `Analyze the following food description and return only the carbohydrates, protein, minerals, dairy, co2_score, water_score, and land_score: '${foodInput}'`
+                }),
             });
 
             const data: AIResponseData = await response.json();
-            setAnalysisResult(data);
+
+            const relevantData = {
+                nutrients: {
+                    carbohydrates: data.nutrients.carbohydrates,
+                    protein: data.nutrients.protein,
+                    minerals: data.nutrients.minerals,
+                    dairy: data.nutrients.dairy
+                },
+                environment: {
+                    co2_score: data.environment.co2_score,
+                    water_score: data.environment.water_score,
+                    land_score: data.environment.land_score
+                },
+                nutrient_score: data.nutrient_score,
+                environment_score: data.environment_score
+            };
+            setAnalysisResult(relevantData);
             setLoading(false);
         } catch (error) {
             console.error("Error analyzing text:", error);
-            setLoading(false); 
+            setLoading(false);
         }
     };
 
@@ -107,7 +141,8 @@ export default function Analysis() {
                 </section>
             )}
         </section>
-        { analysisResult !== null && <Statistics response={analysisResult!} /> }
+
+        {analysisResult !== null && <Statistics response={analysisResult!} />}
         </>
     );
 }
