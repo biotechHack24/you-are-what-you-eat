@@ -80,30 +80,47 @@ export default function Statistics() {
         <section className={styles.main}>
             <h1 className={styles.heading}>Statistics</h1>
             <section className={styles.data}>
-                <h2 className={styles.section_heading}>Nutrients</h2>
-                <canvas id="chart" className={styles.chart}></canvas>
-                <section className={styles.data_subsection}>
+                <div className={styles.data_section}>
+                    <h2 className={styles.section_heading}>Nutrients</h2>
+                    <canvas id="chart" className={styles.graphic}></canvas>
                     <p className={styles.score}>Overall Health Sore: {example_obj.nutrient_score}</p>
-                </section>
-                <h2 className={styles.section_heading}>Environment</h2>
-                <section className={styles.data_subsection}>
-                    <div className={styles.progress}>
-                        <label>CO2 Emission Score:</label>
-                        <progress value={example_obj.environment.co2_score} max="100"></progress>
-                    </div>
+                </div>
 
-                    <div className={styles.progress}>
-                        <label>Water Usage Score:</label>
-                        <progress value={example_obj.environment.water_score} max="100"></progress>
-                    </div>
+                <div className={styles.data_section}>
+                    <h2 className={styles.section_heading}>Environment</h2>
+                    <section className={styles.graphic}>
+                        <div className={styles.progress}>
+                            <label>CO2 Emission Score:</label>
+                            <meter className={styles.progress_bar} 
+                                value={example_obj.environment.co2_score} 
+                                max={100}
+                                optimum={100}
+                                low={50}>
+                            </meter>
+                        </div>
 
-                    <div className={styles.progress}>
-                        <label>Land Usage Score:</label>
-                        <progress value={example_obj.environment.land_score} max="100"></progress>
-                    </div>
+                        <div className={styles.progress}>
+                            <label>Water Usage Score:</label>
+                            <meter className={styles.progress_bar} 
+                                value={example_obj.environment.water_score} 
+                                max={100}
+                                optimum={100}
+                                low={50}>
+                            </meter>
+                        </div>
 
+                        <div className={styles.progress}>
+                            <label>Land Usage Score:</label>
+                            <meter className={styles.progress_bar} 
+                                value={example_obj.environment.land_score} 
+                                max={100}
+                                optimum={100}
+                                low={50}>
+                            </meter>
+                        </div>
+                    </section>
                     <p className={styles.score}>Overall Environment Score: {example_obj.environment_score}</p>
-                </section>
+                </div>
             </section>
         </section>
     );
