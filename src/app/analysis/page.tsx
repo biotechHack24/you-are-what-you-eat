@@ -1,8 +1,9 @@
 'use client'
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import styles from "./page.module.css";
 import { AIResponseData } from "../types";
+import Statistics from '../statistics/page';
 
 export default function Analysis() {
     const [foodInput, setFoodInput] = useState("");
@@ -56,6 +57,7 @@ export default function Analysis() {
     };
 
     return (
+        <>
         <section className={styles.main}>
             <h1 className={styles.heading}>Food Analysis</h1>
 
@@ -91,5 +93,7 @@ export default function Analysis() {
                 </section>
             )}
         </section>
+        { analysisResult !== null && <Statistics response={analysisResult!} /> }
+        </>
     );
 }
