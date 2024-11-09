@@ -1,15 +1,13 @@
 'use client'
 
 import { useState } from 'react';
-import { useRouter } from 'next/router';  // Next.js's router for navigation
-import styles from "./analysis.module.css";
-import { AIResponseData } from "../types";  // Assuming this type is defined in your types file
+import styles from "./page.module.css";
+import { AIResponseData } from "../types";
 
 export default function Analysis() {
     const [foodInput, setFoodInput] = useState("");
     const [image, setImage] = useState(null);
     const [analysisResult, setAnalysisResult] = useState<AIResponseData | null>(null);
-    const router = useRouter();  // To redirect after API call
 
     const HUGGING_FACE_API_KEY = "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";
     const MODEL_NAME = "meta-llama/Llama-3.2-11B-Vision-Instruct";
@@ -33,10 +31,6 @@ export default function Analysis() {
 
                 const data: AIResponseData = await response.json();
                 setAnalysisResult(data);
-                router.push({
-                    pathname: '/statistics',
-                    query: { result: JSON.stringify(data) }  // Passing data via query params
-                });
             } catch (error) {
                 console.error("Error analyzing image:", error);
             }
@@ -56,10 +50,6 @@ export default function Analysis() {
 
             const data: AIResponseData = await response.json();
             setAnalysisResult(data);
-            router.push({
-                pathname: '/statistics',
-                query: { result: JSON.stringify(data) }  // Passing data via query params
-            });
         } catch (error) {
             console.error("Error analyzing text:", error);
         }
@@ -92,6 +82,14 @@ export default function Analysis() {
                     Analyze
                 </button>
             </section>
+
+            {analysisResult && (
+                <section className={styles.resultSection}>
+                    <h2>Analysis Results</h2>
+                    <pre>{JSON.stringify(analysisResult, null, 2)}</pre>
+                    {/* Display the analysis data in a readable format */}
+                </section>
+            )}
         </section>
     );
 }
