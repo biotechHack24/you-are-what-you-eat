@@ -80,6 +80,7 @@ export default function Statistics() {
         <section className={styles.main}>
             <h1 className={styles.heading}>Statistics</h1>
             <section className={styles.data}>
+
                 <div className={styles.data_section}>
                     <h2 className={styles.section_heading}>Nutrients</h2>
                     <canvas id="chart" className={styles.graphic}></canvas>
