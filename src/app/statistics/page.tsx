@@ -38,33 +38,14 @@ function get_pie_chart_data(data :NutrientsData) {
 }
 
 
-export default function Statistics() {
-
-    let example_obj :AIResponseData = {
-        nutrients: {
-            carbohydrates: 50,
-            protein: 15,
-            minerals: 10,
-            dairy: 25
-        },
-
-        nutrient_score: 70,
-
-        environment: {
-            co2_score: 60,
-            water_score: 50,
-            land_score: 15
-        },
-
-        environment_score: 50
-    };
-
+export default function Statistics(prop :{response :AIResponseData}) {
+    let response = prop.response;
 
     useEffect(() => {
         const ctx = document.getElementById('chart') as HTMLCanvasElement;
         const pie_chart_config = {
             type: 'pie',
-            data: get_pie_chart_data(example_obj.nutrients)
+            data: get_pie_chart_data(response.nutrients)
         };
 
         const myChart = new Chart(ctx, pie_chart_config as ChartConfiguration);
@@ -84,7 +65,7 @@ export default function Statistics() {
                 <div className={styles.data_section}>
                     <h2 className={styles.section_heading}>Nutrients</h2>
                     <canvas id="chart" className={styles.graphic}></canvas>
-                    <p className={styles.score}>Overall Health Sore: {example_obj.nutrient_score}</p>
+                    <p className={styles.score}>Overall Health Sore: {response.nutrient_score}</p>
                 </div>
 
                 <div className={styles.data_section}>
@@ -93,7 +74,7 @@ export default function Statistics() {
                         <div className={styles.progress}>
                             <label>CO2 Emission Score:</label>
                             <meter className={styles.progress_bar} 
-                                value={example_obj.environment.co2_score} 
+                                value={response.environment.co2_score} 
                                 max={100}
                                 optimum={100}
                                 low={50}>
@@ -103,7 +84,7 @@ export default function Statistics() {
                         <div className={styles.progress}>
                             <label>Water Usage Score:</label>
                             <meter className={styles.progress_bar} 
-                                value={example_obj.environment.water_score} 
+                                value={response.environment.water_score} 
                                 max={100}
                                 optimum={100}
                                 low={50}>
@@ -113,14 +94,14 @@ export default function Statistics() {
                         <div className={styles.progress}>
                             <label>Land Usage Score:</label>
                             <meter className={styles.progress_bar} 
-                                value={example_obj.environment.land_score} 
+                                value={response.environment.land_score} 
                                 max={100}
                                 optimum={100}
                                 low={50}>
                             </meter>
                         </div>
                     </section>
-                    <p className={styles.score}>Overall Environment Score: {example_obj.environment_score}</p>
+                    <p className={styles.score}>Overall Environment Score: {response.environment_score}</p>
                 </div>
             </section>
         </section>
