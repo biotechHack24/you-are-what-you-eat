@@ -14,7 +14,7 @@ export default function Analysis() {
     const HUGGING_FACE_API_KEY = "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";
     const MODEL_NAME = "meta-llama/Llama-3.2-11B-Vision-Instruct";
 
-    const handleImageUpload = async (event :any) => {
+    const handleImageUpload = async (event: any) => {
         const file = event.target.files[0];
         setImage(file);
 
@@ -70,7 +70,7 @@ export default function Analysis() {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    inputs: `Analyze the following food description and return only the carbohydrates, protein, minerals, dairy, co2_score, water_score, and land_score: '${foodInput}'`
+                    inputs: `Analyze the following food description and return a JSON object with fields for 'nutrients' (carbohydrates, protein, minerals, dairy), 'environment' (co2_score, water_score, land_score), 'nutrient_score', and 'environment_score'. Ensure that all values sum up to 100. Here is the description: '${foodInput}'`
                 }),
             });
 
