@@ -1,6 +1,6 @@
-import styles from "../CSS/analyse.css";
+import styles from "./page.module.css";
 
-export default function Home() {
+export default function Analysis() {
     return (
         <main className={styles.main}>
             <h1>Analysis</h1>
