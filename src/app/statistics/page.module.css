@@ -1,3 +1,20 @@
-p.something {
-    font-size: 50%;
+.main {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.data {
+    align-items: baseline;
+}
+
+.section_heading {
+    margin-top: 5svh;
+    margin-bottom: 2svh;
+}
+
+.data_subsection {
+    display: flex;
+    gap: 5svw;
 }
