@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react';
 import styles from "./page.module.css";
-import Chart from 'chart.js/auto';
+import Chart, { ChartConfiguration } from 'chart.js/auto';
 
 import { AIResponseData, NutrientsData } from "../types";
 
@@ -49,6 +49,13 @@ export default function Statistics() {
         },
 
         nutrient_score: 70,
+
+        environment: {
+            co2_score: 60,
+            water_score: 50,
+            land_score: 15
+        },
+
         environment_score: 50
     };
 
@@ -60,7 +67,7 @@ export default function Statistics() {
             data: get_pie_chart_data(example_obj.nutrients)
         };
 
-        const myChart = new Chart(ctx, pie_chart_config);
+        const myChart = new Chart(ctx, pie_chart_config as ChartConfiguration);
 
         // Cleanup function to destroy the chart instance
         return () => {
@@ -74,20 +81,28 @@ export default function Statistics() {
             <h1 className={styles.heading}>Statistics</h1>
             <section className={styles.data}>
                 <h2 className={styles.section_heading}>Nutrients</h2>
+                <canvas id="chart" className={styles.chart}></canvas>
                 <section className={styles.data_subsection}>
-                    <div>
-                        <canvas id="chart"></canvas>
-                    </div>
-                    <p>Carbohydrates: {example_obj.nutrients.carbohydrates}</p>
-                    <p>Protein: {example_obj.nutrients.protein}</p>
-                    <p>Minerals: {example_obj.nutrients.minerals}</p>
-                    <p>Dairy: {example_obj.nutrients.dairy}</p>
-                    <hr />
-                    <p>Overall Health Sore: {example_obj.nutrient_score}</p>
+                    <p className={styles.score}>Overall Health Sore: {example_obj.nutrient_score}</p>
                 </section>
                 <h2 className={styles.section_heading}>Environment</h2>
                 <section className={styles.data_subsection}>
-                    <p>Score: {example_obj.environment_score}</p>
+                    <div className={styles.progress}>
+                        <label>CO2 Emission Score:</label>
+                        <progress value={example_obj.environment.co2_score} max="100"></progress>
+                    </div>
+
+                    <div className={styles.progress}>
+                        <label>Water Usage Score:</label>
+                        <progress value={example_obj.environment.water_score} max="100"></progress>
+                    </div>
+
+                    <div className={styles.progress}>
+                        <label>Land Usage Score:</label>
+                        <progress value={example_obj.environment.land_score} max="100"></progress>
+                    </div>
+
+                    <p className={styles.score}>Overall Environment Score: {example_obj.environment_score}</p>
                 </section>
             </section>
         </section>
