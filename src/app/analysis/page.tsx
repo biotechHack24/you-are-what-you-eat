@@ -14,7 +14,7 @@ export default function Analysis() {
     const HUGGING_FACE_API_KEY = "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";
     const MODEL_NAME = "meta-llama/Llama-3.2-11B-Vision-Instruct";
 
-    const handleImageUpload = async (event) => {
+    const handleImageUpload = async (event :any) => {
         const file = event.target.files[0];
         setImage(file);
 
