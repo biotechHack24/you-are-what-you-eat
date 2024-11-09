@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import styles from "./page.module.css";
 import { AIResponseData } from "../types";
 import Statistics from '../statistics/page';
@@ -9,6 +9,7 @@ export default function Analysis() {
     const [foodInput, setFoodInput] = useState("");
     const [image, setImage] = useState(null);
     const [analysisResult, setAnalysisResult] = useState<AIResponseData | null>(null);
+    const [loading, setLoading] = useState(false);
 
     const HUGGING_FACE_API_KEY = "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";
     const MODEL_NAME = "meta-llama/Llama-3.2-11B-Vision-Instruct";
@@ -21,6 +22,8 @@ export default function Analysis() {
             const formData = new FormData();
             formData.append("file", file);
 
+            setLoading(true);
+
             try {
                 const response = await fetch(`https://api-inference.huggingface.co/models/${MODEL_NAME}`, {
                     method: 'POST',
@@ -32,13 +35,17 @@ export default function Analysis() {
 
                 const data: AIResponseData = await response.json();
                 setAnalysisResult(data);
+                setLoading(false);
             } catch (error) {
                 console.error("Error analyzing image:", error);
+                setLoading(false);
             }
         }
     };
 
     const handleTextSubmit = async () => {
+        setLoading(true);
+
         try {
             const response = await fetch(`https://api-inference.huggingface.co/models/${MODEL_NAME}`, {
                 method: 'POST',
@@ -51,8 +58,10 @@ export default function Analysis() {
 
             const data: AIResponseData = await response.json();
             setAnalysisResult(data);
+            setLoading(false);
         } catch (error) {
             console.error("Error analyzing text:", error);
+            setLoading(false); 
         }
     };
 
@@ -80,8 +89,13 @@ export default function Analysis() {
                 <button 
                     onClick={handleTextSubmit} 
                     className={styles.submitButton}
+                    disabled={loading}
                 >
-                    Analyze
+                    {loading ? (
+                        <div className={styles.spinner}></div>
+                    ) : (
+                        "Analyze"
+                    )}
                 </button>
             </section>
 
