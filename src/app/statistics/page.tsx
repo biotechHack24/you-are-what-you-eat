@@ -48,7 +48,7 @@ const Statistics = (props: any) => {
         };
     }, [response]);
 
-    if (!response) return <p>No data available for analysis.</p>;
+    if (!response) return //<p>No data available for analysis.</p>;
 
     const { nutrients, environment, nutrient_score, environment_score } = response;
 
