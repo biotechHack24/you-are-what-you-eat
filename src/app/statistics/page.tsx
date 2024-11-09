@@ -38,10 +38,12 @@ function get_pie_chart_data(data :NutrientsData) {
 }
 
 
-export default function Statistics(prop :{response :AIResponseData}) {
-    let response = prop.response;
+const Statistics = (props :any) => {
+    let response = props.response;
 
     useEffect(() => {
+        if (response === null) return;
+
         const ctx = document.getElementById('chart') as HTMLCanvasElement;
         const pie_chart_config = {
             type: 'pie',
@@ -54,8 +56,9 @@ export default function Statistics(prop :{response :AIResponseData}) {
         return () => {
             myChart.destroy();
         };
-    }, []);
+    }, [response]);
 
+    if (response == null) return;
 
     return (
         <section className={styles.main}>
@@ -107,3 +110,5 @@ export default function Statistics(prop :{response :AIResponseData}) {
         </section>
     );
 }
+
+export default Statistics
