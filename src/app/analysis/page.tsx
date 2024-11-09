@@ -33,27 +33,27 @@ export default function Analysis() {
                     body: formData,
                 });
 
-                const data: AIResponseData = await response.json();
+                const data = await response.json();
 
-                const relevantData = {
+                const relevantData: AIResponseData = {
                     nutrients: {
-                        carbohydrates: data.nutrients.carbohydrates,
-                        protein: data.nutrients.protein,
-                        minerals: data.nutrients.minerals,
-                        dairy: data.nutrients.dairy
+                        carbohydrates: data.nutrients?.carbohydrates ?? 0,
+                        protein: data.nutrients?.protein ?? 0,
+                        minerals: data.nutrients?.minerals ?? 0,
+                        dairy: data.nutrients?.dairy ?? 0
                     },
                     environment: {
-                        co2_score: data.environment.co2_score,
-                        water_score: data.environment.water_score,
-                        land_score: data.environment.land_score
+                        co2_score: data.environment?.co2_score ?? 0,
+                        water_score: data.environment?.water_score ?? 0,
+                        land_score: data.environment?.land_score ?? 0
                     },
-                    nutrient_score: data.nutrient_score,
-                    environment_score: data.environment_score
+                    nutrient_score: data.nutrient_score ?? 0,
+                    environment_score: data.environment_score ?? 0
                 };
                 setAnalysisResult(relevantData);
-                setLoading(false);
             } catch (error) {
                 console.error("Error analyzing image:", error);
+            } finally {
                 setLoading(false);
             }
         }
@@ -74,27 +74,27 @@ export default function Analysis() {
                 }),
             });
 
-            const data: AIResponseData = await response.json();
+            const data = await response.json();
 
-            const relevantData = {
+            const relevantData: AIResponseData = {
                 nutrients: {
-                    carbohydrates: data.nutrients.carbohydrates,
-                    protein: data.nutrients.protein,
-                    minerals: data.nutrients.minerals,
-                    dairy: data.nutrients.dairy
+                    carbohydrates: data.nutrients?.carbohydrates ?? 0,
+                    protein: data.nutrients?.protein ?? 0,
+                    minerals: data.nutrients?.minerals ?? 0,
+                    dairy: data.nutrients?.dairy ?? 0
                 },
                 environment: {
-                    co2_score: data.environment.co2_score,
-                    water_score: data.environment.water_score,
-                    land_score: data.environment.land_score
+                    co2_score: data.environment?.co2_score ?? 0,
+                    water_score: data.environment?.water_score ?? 0,
+                    land_score: data.environment?.land_score ?? 0
                 },
-                nutrient_score: data.nutrient_score,
-                environment_score: data.environment_score
+                nutrient_score: data.nutrient_score ?? 0,
+                environment_score: data.environment_score ?? 0
             };
             setAnalysisResult(relevantData);
-            setLoading(false);
         } catch (error) {
             console.error("Error analyzing text:", error);
+        } finally {
             setLoading(false);
         }
     };
@@ -142,7 +142,7 @@ export default function Analysis() {
             )}
         </section>
 
-        {analysisResult !== null && <Statistics response={analysisResult!} />}
+        {analysisResult !== null && <Statistics response={analysisResult} />}
         </>
     );
 }
