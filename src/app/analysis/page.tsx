@@ -179,6 +179,7 @@ export default function Analysis() {
             setAnalysisResult(relevantData);
         } catch (error) {
             console.error("Error analyzing text:", error);
+            handleTextSubmit();
         } finally {
             setLoading(false);
         }
