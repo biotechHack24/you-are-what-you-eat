@@ -51,7 +51,7 @@ environment_score: 50
 Base the scores on the following dish: 
 `;
 
-const HUGGING_FACE_API_KEY = process.env.HF_API_KEY;
+const HUGGING_FACE_API_KEY = process.env.NEXT_PUBLIC_HF_API_KEY;
 const MODEL_NAME = "Qwen/Qwen2.5-72B-Instruct";
 
 const ai_client = new HfInference(HUGGING_FACE_API_KEY);
