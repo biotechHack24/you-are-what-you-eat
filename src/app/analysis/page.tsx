@@ -1,6 +1,26 @@
 'use client'
 
 import { useState, useEffect } from 'react';
+
+interface SpeechRecognition {
+    continuous: boolean;
+    interimResults: boolean;
+    lang: string;
+    start: () => void;
+    stop: () => void;
+    onresult: (event: SpeechRecognitionEvent) => void;
+    onend: () => void;
+}
+
+interface SpeechRecognitionEvent {
+    results: {
+        [key: number]: {
+            [key: number]: {
+                transcript: string;
+            };
+        };
+    };
+}
 import styles from "./page.module.css";
 import { AIResponseData } from "../types";
 import Statistics from '../statistics/page';
@@ -75,8 +95,8 @@ export default function Analysis() {
             recognitionInstance.lang = "en-US";
 
             recognitionInstance.onresult = (event: SpeechRecognitionEvent) => {
-                const transcript = Array.from(event.results)
-                    .map(result => result[0].transcript)
+                const transcript = Array.from(event.results as any)
+                    .map((result: any) => result[0].transcript)
                     .join('');
                 setFoodInput(transcript);
             };
