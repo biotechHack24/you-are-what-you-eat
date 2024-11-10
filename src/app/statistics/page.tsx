@@ -64,7 +64,7 @@ const Statistics = (props: any) => {
 
                 <div className={styles.data_section}>
                     <h2 className={styles.section_heading}>Environment</h2>
-                    <section className={styles.graphic}>
+                    <section className={styles.environment_section}>
                         <div className={styles.progress}>
                             <label>CO2 Emission Score:</label>
                             <meter className={styles.progress_bar} 
@@ -74,7 +74,7 @@ const Statistics = (props: any) => {
                                 low={50}>
                             </meter>
                         </div>
-
+                    
                         <div className={styles.progress}>
                             <label>Water Usage Score:</label>
                             <meter className={styles.progress_bar} 
@@ -84,7 +84,7 @@ const Statistics = (props: any) => {
                                 low={50}>
                             </meter>
                         </div>
-
+                    
                         <div className={styles.progress}>
                             <label>Land Usage Score:</label>
                             <meter className={styles.progress_bar} 
