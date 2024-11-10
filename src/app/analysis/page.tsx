@@ -131,7 +131,6 @@ export default function Analysis() {
 
     const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0] || null;
-        setImage(file);
 
         if (file) {
             setLoading(true);
