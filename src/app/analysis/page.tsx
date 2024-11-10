@@ -1,109 +1,152 @@
 'use client'
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+
+interface SpeechRecognition {
+    continuous: boolean;
+    interimResults: boolean;
+    lang: string;
+    start: () => void;
+    stop: () => void;
+    onresult: (event: SpeechRecognitionEvent) => void;
+    onend: () => void;
+}
+
+interface SpeechRecognitionEvent {
+    results: {
+        [key: number]: {
+            [key: number]: {
+                transcript: string;
+            };
+        };
+    };
+}
 import styles from "./page.module.css";
 import { AIResponseData } from "../types";
 import Statistics from '../statistics/page';
-import { HfInference } from "@huggingface/inference"
+import { HfInference } from "@huggingface/inference";
 
-const prompt :string = 
+const prompt: string = 
 `Do not include the prompt in your response. Respond with a JSON object based on the following types: 
 export type AIResponseData = {
-nutrients         :NutrientsData,
-nutrient_score    :number,
-environment       :EnvironmentData,
-environment_score :number,
+    nutrients         :NutrientsData,
+    nutrient_score    :number,
+    environment       :EnvironmentData,
+    environment_score :number,
 }
 
 export type NutrientsData = {
-carbohydrates :number,
-protein       :number,
-minerals      :number,
-dairy         :number
+    carbohydrates :number,
+    protein       :number,
+    minerals      :number,
+    dairy         :number
 }
 
 export type EnvironmentData = {
-co2_score      :number,
-water_score    :number,
-land_score     :number
+    co2_score      :number,
+    water_score    :number,
+    land_score     :number
 }
 
 Make sure that the numbers in NutrientsData should add up to 100. Here's an example:
 {
-nutrients: {
-    carbohydrates: 50,
-    protein: 15,
-    minerals: 10,
-    dairy: 25
-},
+    nutrients: {
+        carbohydrates: 50,
+        protein: 15,
+        minerals: 10,
+        dairy: 25
+    },
 
-nutrient_score: 70,
+    nutrient_score: 70,
 
-environment: {
-    co2_score: 60,
-    water_score: 50,
-    land_score: 15
-},
+    environment: {
+        co2_score: 60,
+        water_score: 50,
+        land_score: 15
+    },
 
-environment_score: 50
+    environment_score: 50
 }
 
 Base the scores on the following dish: 
 `;
 
 const HUGGING_FACE_API_KEY = process.env.NEXT_PUBLIC_HF_API_KEY;
-const MODEL_NAME = "Qwen/Qwen2.5-72B-Instruct";
+const TEXT_MODEL = "Qwen/Qwen2.5-72B-Instruct";
+const IMAGE_MODEL = "Salesforce/blip-image-captioning-large";
 
 const ai_client = new HfInference(HUGGING_FACE_API_KEY);
 
 export default function Analysis() {
     const [foodInput, setFoodInput] = useState("");
-    const [image, setImage] = useState(null);
     const [analysisResult, setAnalysisResult] = useState<AIResponseData | null>(null);
     const [loading, setLoading] = useState(false);
+    const [isListening, setIsListening] = useState(false);
 
+    const [recognition, setRecognition] = useState<SpeechRecognition | null>(null);
 
-    const handleImageUpload = async (event: any) => {
-        const file = event.target.files[0];
-        setImage(file);
+    useEffect(() => {
+        const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+        
+        if (SpeechRecognition) {
+            const recognitionInstance = new SpeechRecognition();
+            recognitionInstance.continuous = true;
+            recognitionInstance.interimResults = true;
+            recognitionInstance.lang = "en-US";
+
+            recognitionInstance.onresult = (event: SpeechRecognitionEvent) => {
+                const transcript = Array.from(event.results as any)
+                    .map((result: any) => result[0].transcript)
+                    .join('');
+                setFoodInput(transcript);
+            };
+
+            recognitionInstance.onend = () => {
+                setIsListening(false);
+            };
+
+            setRecognition(recognitionInstance);
+        } else {
+            console.error("Speech recognition not supported by this browser.");
+        }
+
+        return () => {
+            recognition?.stop();
+        };
+    }, []);
+
+    const startListening = () => {
+        if (recognition && !isListening) {
+            recognition.start();
+            setIsListening(true);
+        }
+    };
+
+    const stopListening = () => {
+        if (recognition && isListening) {
+            recognition.stop();
+            setIsListening(false);
+        }
+    };
+
+    const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0] || null;
 
         if (file) {
-            const formData = new FormData();
-            formData.append("file", file);
-
             setLoading(true);
 
             try {
-                const response = await fetch(`https://api-inference.huggingface.co/models/${MODEL_NAME}`, {
-                    method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${HUGGING_FACE_API_KEY}`,
-                },
-                body: formData,
+                let food = await ai_client.imageToText({
+                    model: IMAGE_MODEL,
+                    data: file,
                 });
 
-                const data = await response.json();
-
-                const relevantData: AIResponseData = {
-                    nutrients: {
-                        carbohydrates: data.nutrients?.carbohydrates ?? 0,
-                        protein: data.nutrients?.protein ?? 0,
-                        minerals: data.nutrients?.minerals ?? 0,
-                        dairy: data.nutrients?.dairy ?? 0
-                    },
-                    environment: {
-                        co2_score: data.environment?.co2_score ?? 0,
-                        water_score: data.environment?.water_score ?? 0,
-                        land_score: data.environment?.land_score ?? 0
-                    },
-                    nutrient_score: data.nutrient_score ?? 0,
-                    environment_score: data.environment_score ?? 0
-                };
-                setAnalysisResult(relevantData);
+                setFoodInput(food.generated_text);
             } catch (error) {
                 console.error("Error analyzing image:", error);
+                handleImageUpload(event);
             } finally {
-                setLoading(false);
+                handleTextSubmit();
             }
         }
     };
@@ -115,7 +158,7 @@ export default function Analysis() {
             let ai_res = "";
 
             const stream = ai_client.chatCompletionStream({
-                model: "Qwen/Qwen2.5-72B-Instruct",
+                model: TEXT_MODEL,
                 messages: [
                     {
                         role: "user",
@@ -132,11 +175,11 @@ export default function Analysis() {
                 }  
             }
 
-            let relevantData = JSON.parse(ai_res)
+            let relevantData = JSON.parse(ai_res);
             setAnalysisResult(relevantData);
         } catch (error) {
             console.error("Error analyzing text:", error);
-            await handleTextSubmit();
+            handleTextSubmit();
         } finally {
             setLoading(false);
         }
@@ -145,39 +188,47 @@ export default function Analysis() {
     return (
         <>
         <section className={styles.main}>
-        <h1 className={styles.heading}>Food Analysis</h1>
+            <h1 className={styles.heading}>Food Analysis</h1>
 
-        <section className={styles.inputSection}>
-        <h2>Upload an Image of Your Food</h2>
-        <input 
-        type="file" 
-        accept="image/*" 
-        onChange={handleImageUpload} 
-        className={styles.imageInput} 
-        />
+            <section className={styles.inputSection}>
+                <h2>Upload an Image of Your Food</h2>
+                <input 
+                    type="file" 
+                    accept="image/*" 
+                    onChange={handleImageUpload} 
+                    className={styles.imageInput} 
+                />
 
-        <h2>Or Enter a Text Description</h2>
-        <textarea 
-        value={foodInput} 
-        onChange={(e) => setFoodInput(e.target.value)} 
-        placeholder="Describe your food (e.g., 'grilled chicken with vegetables')"
-        className={styles.textInput}
-        ></textarea>
-        <button 
-        onClick={handleTextSubmit} 
-        className={styles.submitButton}
-        disabled={loading}
-        >
-        {loading ? (
-            <div className={styles.spinner}></div>
-        ) : (
-        "Analyze"
-        )}
-        </button>
+                <h2>Or Enter a Text Description</h2>
+                <textarea 
+                    value={foodInput} 
+                    onChange={(e) => setFoodInput(e.target.value)} 
+                    placeholder="Describe your food (e.g., 'grilled chicken with vegetables')"
+                    className={styles.textInput}
+                ></textarea>
+
+                <button 
+                    onClick={isListening ? stopListening : startListening} 
+                    className={styles.micButton}
+                >
+                    {isListening ? "Stop" : "Dictate"}
+                </button>
+
+                <button 
+                    onClick={handleTextSubmit} 
+                    className={styles.submitButton}
+                    disabled={loading}
+                >
+                    {loading ? (
+                        <div className={styles.spinner}></div>
+                    ) : (
+                        "Analyze"
+                    )}
+                </button>
+            </section>
         </section>
-        </section>
 
-        {analysisResult !== null && <Statistics response={analysisResult} />}
+        {analysisResult && <Statistics response={analysisResult} />}
         </>
     );
 }
