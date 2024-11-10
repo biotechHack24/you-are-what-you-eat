@@ -31,18 +31,19 @@
 .data {
     width: 100%;
     display: flex;
-    flex-direction: column;
-    gap: 2rem;
+    flex-direction: row;
+    gap: 2vw;
     margin-top: 5vh;
-    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
 }
 
 .data_section {
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 90%;
-    max-width: 600px;
+    width: 45%;
+    min-width: 280px;
     background: var(--secondary);
     border-radius: 12px;
     padding: 2rem;
@@ -67,8 +68,8 @@
 .graphic {
     width: 100%;
     max-width: 500px;
-    margin-top: 2vh;
-    padding: 1vh;
+    margin-top: 3vh;
+    padding: 2vh;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -84,15 +85,22 @@
     transform: scale(1.05);
 }
 
+.environment_scores {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+    margin-top: 2rem;
+    gap: 1rem;
+}
+
 .progress {
     width: 100%;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    margin-top: 1vh;
     font-size: 1.1rem;
     color: var(--accent);
-    transition: color 0.3s;
 }
 
 .progress label {
@@ -111,24 +119,25 @@
     font-size: 1.2rem;
     color: var(--primary);
     text-align: center;
-    margin-top: 1.5rem;
+    margin-top: 2rem;
     font-weight: bold;
     animation: fadeIn 0.8s ease-in-out;
 }
 
 /* Responsive adjustments for smaller screens */
 @media (max-width: 768px) {
+    .data {
+        flex-direction: column;
+        align-items: center;
+    }
+
     .data_section {
-        width: 100%;
+        width: 90%;
         padding: 1.5rem;
     }
 
     .section_heading {
         font-size: 1.5rem;
-    }
-
-    .graphic {
-        margin-top: 1.5vh;
     }
 
     .progress label {
