@@ -1,9 +1,9 @@
 /* Global color variables */
 :root {
-  --background: #003C43;  /* Deep teal background */
-  --secondary: #135D66;   /* Darker teal for accents */
-  --primary: #77B0AA;     /* Lighter teal for highlights */
-  --accent: #E3FEF7;       /* Soft pastel accent color */
+  --background: #BDD2B6;  /* Deep teal background */
+  --secondary: #A2B29F;   /* Darker teal for accents */
+  --primary: #798777;     /* Lighter teal for highlights */
+  --accent: #F8EDE3;       /* Soft pastel accent color */
 }
 
 /* Font import */
