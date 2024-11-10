@@ -72,13 +72,13 @@ Base the scores on the following dish:
 `;
 
 const HUGGING_FACE_API_KEY = process.env.NEXT_PUBLIC_HF_API_KEY;
-const MODEL_NAME = "Qwen/Qwen2.5-72B-Instruct";
+const TEXT_MODEL = "Qwen/Qwen2.5-72B-Instruct";
+const IMAGE_MODEL = "Salesforce/blip-image-captioning-large";
 
 const ai_client = new HfInference(HUGGING_FACE_API_KEY);
 
 export default function Analysis() {
     const [foodInput, setFoodInput] = useState("");
-    const [image, setImage] = useState<File | null>(null);
     const [analysisResult, setAnalysisResult] = useState<AIResponseData | null>(null);
     const [loading, setLoading] = useState(false);
     const [isListening, setIsListening] = useState(false);
@@ -134,42 +134,20 @@ export default function Analysis() {
         setImage(file);
 
         if (file) {
-            const formData = new FormData();
-            formData.append("file", file);
-
             setLoading(true);
 
             try {
-                const response = await fetch(`https://api-inference.huggingface.co/models/${MODEL_NAME}`, {
-                    method: 'POST',
-                    headers: {
-                        'Authorization': `Bearer ${HUGGING_FACE_API_KEY}`,
-                    },
-                    body: formData,
+                let food = await ai_client.imageToText({
+                    model: IMAGE_MODEL,
+                    data: file,
                 });
 
-                const data = await response.json();
-
-                const relevantData: AIResponseData = {
-                    nutrients: {
-                        carbohydrates: data.nutrients?.carbohydrates ?? 0,
-                        protein: data.nutrients?.protein ?? 0,
-                        minerals: data.nutrients?.minerals ?? 0,
-                        dairy: data.nutrients?.dairy ?? 0
-                    },
-                    environment: {
-                        co2_score: data.environment?.co2_score ?? 0,
-                        water_score: data.environment?.water_score ?? 0,
-                        land_score: data.environment?.land_score ?? 0
-                    },
-                    nutrient_score: data.nutrient_score ?? 0,
-                    environment_score: data.environment_score ?? 0
-                };
-                setAnalysisResult(relevantData);
+                setFoodInput(food.generated_text);
             } catch (error) {
                 console.error("Error analyzing image:", error);
+                handleImageUpload(event);
             } finally {
-                setLoading(false);
+                handleTextSubmit();
             }
         }
     };
@@ -181,7 +159,7 @@ export default function Analysis() {
             let ai_res = "";
 
             const stream = ai_client.chatCompletionStream({
-                model: "Qwen/Qwen2.5-72B-Instruct",
+                model: TEXT_MODEL,
                 messages: [
                     {
                         role: "user",
